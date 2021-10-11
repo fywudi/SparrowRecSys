@@ -206,6 +206,7 @@ object FeatureEngForRecModel {
 
 
   def extractAndSaveUserFeaturesToRedis(samples:DataFrame): DataFrame = {
+
     val userLatestSamples = samples.withColumn("userRowNum", row_number()
       .over(Window.partitionBy("userId")
         .orderBy(col("timestamp").desc)))
@@ -259,6 +260,8 @@ object FeatureEngForRecModel {
   }
 
   def main(args: Array[String]): Unit = {
+    System.setProperty("hadoop.home.dir", "c:\\winutil\\")
+
     Logger.getLogger("org").setLevel(Level.ERROR)
 
     val conf = new SparkConf()
@@ -274,7 +277,15 @@ object FeatureEngForRecModel {
     val ratingSamples = spark.read.format("csv").option("header", "true").load(ratingsResourcesPath.getPath)
 
     val ratingSamplesWithLabel = addSampleLabel(ratingSamples)
+    println("display ratingSamplesWithLabel")
+    ratingSamplesWithLabel.printSchema()
     ratingSamplesWithLabel.show(10, truncate = false)
+
+
+    println("display movieSamples")
+    movieSamples.printSchema()
+    movieSamples.show(10, truncate = false)
+
 
     val samplesWithMovieFeatures = addMovieFeatures(movieSamples, ratingSamplesWithLabel)
     val samplesWithUserFeatures = addUserFeatures(samplesWithMovieFeatures)

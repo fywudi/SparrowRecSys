@@ -15,6 +15,8 @@ import java.net.URL;
  * Recsys Server, end point of online recommendation service
  */
 
+//http://localhost:6020/
+
 public class RecSysServer {
 
     public static void main(String[] args) throws Exception {
@@ -22,7 +24,7 @@ public class RecSysServer {
     }
 
     //recsys server port number
-    private static final int DEFAULT_PORT = 6010;
+    private static final int DEFAULT_PORT = 6020;
 
     public void run() throws Exception{
 

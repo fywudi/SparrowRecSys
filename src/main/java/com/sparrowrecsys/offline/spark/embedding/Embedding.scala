@@ -266,6 +266,9 @@ object Embedding {
   }
 
   def main(args: Array[String]): Unit = {
+    System.setProperty("hadoop.home.dir", "c:\\winutil\\")
+
+
     Logger.getLogger("org").setLevel(Level.ERROR)
 
     val conf = new SparkConf()
@@ -282,5 +285,6 @@ object Embedding {
     val model = trainItem2vec(spark, samples, embLength, "item2vecEmb.csv", saveToRedis = false, "i2vEmb")
     //graphEmb(samples, spark, embLength, "itemGraphEmb.csv", saveToRedis = true, "graphEmb")
     //generateUserEmb(spark, rawSampleDataPath, model, embLength, "userEmb.csv", saveToRedis = false, "uEmb")
+    println("end of function")
   }
 }

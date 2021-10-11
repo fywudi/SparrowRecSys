@@ -90,6 +90,8 @@ object FeatureEngineering {
   }
 
   def main(args: Array[String]): Unit = {
+    System.setProperty("hadoop.home.dir", "c:\\winutil\\")
+
     Logger.getLogger("org").setLevel(Level.ERROR)
 
     val conf = new SparkConf()
@@ -100,9 +102,11 @@ object FeatureEngineering {
     val spark = SparkSession.builder.config(conf).getOrCreate()
     val movieResourcesPath = this.getClass.getResource("/webroot/sampledata/movies.csv")
     val movieSamples = spark.read.format("csv").option("header", "true").load(movieResourcesPath.getPath)
+    println(movieSamples.getClass)
     println("Raw Movie Samples:")
     movieSamples.printSchema()
     movieSamples.show(10)
+//    movieSamples.filter("genres = 'Comedy'").show()
 
     println("OneHotEncoder Example:")
     oneHotEncoderExample(movieSamples)
