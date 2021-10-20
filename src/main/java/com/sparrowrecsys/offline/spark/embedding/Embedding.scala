@@ -36,16 +36,17 @@ object Embedding {
         .sortBy { case (_, timestamp) => timestamp }
         .map { case (movieId, _) => movieId }
     })
-
+    println("ratingSamples")
     ratingSamples.printSchema()
-
+    ratingSamples.show(10)
+    println("userseq")
     //process rating data then generate rating movie sequence data
     val userSeq = ratingSamples
       .where(col("rating") >= 3.5)
       .groupBy("userId")
       .agg(sortUdf(collect_list(struct("movieId", "timestamp"))) as "movieIds")
       .withColumn("movieIdStr", array_join(col("movieIds"), " "))
-
+    userSeq.show(10)
     userSeq.select("userId", "movieIdStr").show(10, truncate = false)
     userSeq.select("movieIdStr").rdd.map(r => r.getAs[String]("movieIdStr").split(" ").toSeq)
   }
@@ -282,9 +283,10 @@ object Embedding {
     val embLength = 10
 
     val samples = processItemSequence(spark, rawSampleDataPath)
+    samples.take(10).foreach(println)
     val model = trainItem2vec(spark, samples, embLength, "item2vecEmb.csv", saveToRedis = false, "i2vEmb")
     //graphEmb(samples, spark, embLength, "itemGraphEmb.csv", saveToRedis = true, "graphEmb")
-    //generateUserEmb(spark, rawSampleDataPath, model, embLength, "userEmb.csv", saveToRedis = false, "uEmb")
+    generateUserEmb(spark, rawSampleDataPath, model, embLength, "userEmb.csv", saveToRedis = false, "uEmb")
     println("end of function")
   }
 }

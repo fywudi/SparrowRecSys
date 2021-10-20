@@ -184,10 +184,16 @@ def generateUserEmb(spark, rawSampleDataPath, model, embLength, embOutputPath, s
 
 
 if __name__ == '__main__':
+    os.environ['PYSPARK_PYTHON'] = r'C:\Users\nxf42771\Anaconda3\python.exe '
+    os.environ['PYSPARK_DRIVER_PYTHON'] = r'C:\Users\nxf42771\Anaconda3\python.exe '
+    from pyspark import SparkContext
+
+    SparkContext.setSystemProperty("hadoop.home.dir", "c:\\winutil\\")
+
     conf = SparkConf().setAppName('ctrModel').setMaster('local')
     spark = SparkSession.builder.config(conf=conf).getOrCreate()
     # Change to your own filepath
-    file_path = 'file:///home/hadoop/SparrowRecSys/src/main/resources'
+    file_path = r'\Users\nxf42771\Documents\GitHub\SparrowRecSys\src\main\resources'
     rawSampleDataPath = file_path + "/webroot/sampledata/ratings.csv"
     embLength = 10
     samples = processItemSequence(spark, rawSampleDataPath)
